@@ -4,8 +4,8 @@ const ctx = canvas.getContext('2d');
 const beerImg = new Image();
 const glassImg = new Image();
 
-beerImg.src = 'https://drive.google.com/file/d/1j3vrRMP1ZhxBKBEWSueosWyXfah85e2k';
-glassImg.src = 'https://drive.google.com/file/d/1Or2UmKvoHAjIYImIScNJaLLtZXCdRACX';
+beerImg.src = 'https://drive.google.com/uc?export=view&id=1j3vrRMP1ZhxBKBEWSueosWyXfah85e2k';
+glassImg.src = 'https://drive.google.com/uc?export=view&id=1Or2UmKvoHAjIYImIScNJaLLtZXCdRACX';
 
 const beer = {
     x: Math.random() * canvas.width,
