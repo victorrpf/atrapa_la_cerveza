@@ -5,7 +5,7 @@ const beerImg = new Image();
 const glassImg = new Image();
 
 beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
-glassImg.src = 'https://drive.google.com/uc?export=view&id=1-X4cSmpjENSUXZINbQ3WIbkxrh2SyjLg';
+glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
 
 const beer = {
     x: Math.random() * canvas.width,
