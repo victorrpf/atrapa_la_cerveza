@@ -15,7 +15,7 @@ const beer = {
 
 const glass = {
     x: canvas.width / 2 - 50,
-    y: canvas.height - 400,
+    y: canvas.height - 250,
     speed: 12
 };
 
