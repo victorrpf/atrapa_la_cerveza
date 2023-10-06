@@ -15,8 +15,8 @@ const beer = {
 
 const glass = {
     x: canvas.width / 2 - 50,
-    y: canvas.height - 100,
-    speed: 4
+    y: canvas.height - 400,
+    speed: 12
 };
 
 document.addEventListener('keydown', function(event) {
