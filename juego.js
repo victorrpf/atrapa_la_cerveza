@@ -20,6 +20,7 @@ const glass = {
 };
 
 let score = 0;
+let missedBeers = 0; // Nuevo contador
 
 document.addEventListener('keydown', function(event) {
     switch (event.keyCode) {
@@ -48,10 +49,10 @@ function playFailSound() {
     const oscillator = audioCtx.createOscillator();
 
     oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(415.30, audioCtx.currentTime); // Un tono más bajo
+    oscillator.frequency.setValueAtTime(415.30, audioCtx.currentTime); 
     oscillator.connect(audioCtx.destination);
     oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.1); // Sonido más corto
+    oscillator.stop(audioCtx.currentTime + 0.1);
 }
 
 function update() {
@@ -65,7 +66,8 @@ function update() {
     }
 
     if (beer.y > canvas.height) {
-        playFailSound(); // Agregamos el sonido de derrota aquí
+        playFailSound();
+        missedBeers++; 
         beer.x = Math.random() * canvas.width;
         beer.y = 0;
     }
@@ -77,10 +79,15 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y);
     ctx.drawImage(glassImg, glass.x, glass.y);
 
-    // Mostrar puntuación en la esquina superior izquierda
+    // Mostrar el contador "Atrapadas" en la esquina superior izquierda
     ctx.font = '24px Caveat';
-    ctx.fillStyle = 'white';
-    ctx.fillText('Puntuación: ' + score, 10, 25);
+    ctx.fillStyle = 'black'; // Cambio de color
+    ctx.fillText('Atrapadas: ' + score, 10, 25);
+    
+    // Mostrar el contador "Perdidas" en la esquina superior derecha
+    const missedText = 'Perdidas: ' + missedBeers;
+    const textWidth = ctx.measureText(missedText).width;
+    ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
 }
 
 function loop() {
