@@ -14,7 +14,7 @@ const beer = {
 };
 
 const glass = {
-    x: canvas.width / 2 - 50,
+    x: canvas.width / 2 - 100,
     y: canvas.height - 250,
     speed: 16
 };
@@ -43,6 +43,17 @@ function playBeep() {
     oscillator.stop(audioCtx.currentTime + 0.2);
 }
 
+function playFailSound() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(415.30, audioCtx.currentTime); // Un tono más bajo
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.1); // Sonido más corto
+}
+
 function update() {
     beer.y += beer.speed;
 
@@ -54,6 +65,7 @@ function update() {
     }
 
     if (beer.y > canvas.height) {
+        playFailSound(); // Agregamos el sonido de derrota aquí
         beer.x = Math.random() * canvas.width;
         beer.y = 0;
     }
