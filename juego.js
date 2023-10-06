@@ -4,8 +4,8 @@ const ctx = canvas.getContext('2d');
 const beerImg = new Image();
 const glassImg = new Image();
 
-beerImg.src = 'https://i.imgur.com/J37hErH.png';
-glassImg.src = 'https://i.imgur.com/QLVtQnK.png';
+beerImg.src = 'https://www.monastrellissimo.com/wp-content/uploads/cerveza-amstel.jpg';
+glassImg.src = 'https://scontent-bcn1-1.xx.fbcdn.net/v/t39.30808-6/384574668_843467954092343_4145059756571346169_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5614bc&_nc_ohc=KBFbaPMpfscAX_05YwH&_nc_ht=scontent-bcn1-1.xx&oh=00_AfC2afQjgzRzLOljY3uxQBJDiONA9H1FoCdtFZuBcoxzeA&oe=6524C582';
 
 const beer = {
     x: Math.random() * canvas.width,
