@@ -1,24 +1,60 @@
-// Juego de adivinar el número
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
-let numeroSecreto = Math.floor(Math.random() * 100) + 1;  // Número entre 1 y 100
-let intentos = 0;
+const beerImg = new Image();
+const glassImg = new Image();
 
-function adivinarNumero() {
-    let numeroUsuario = parseInt(document.getElementById("numero").value);
-    intentos++;
+beerImg.src = 'https://i.imgur.com/J37hErH.png';
+glassImg.src = 'https://i.imgur.com/QLVtQnK.png';
 
-    if (numeroUsuario === numeroSecreto) {
-        alert("¡Has adivinado el número en " + intentos + " intentos!");
-        reiniciarJuego();
-    } else if (numeroUsuario < numeroSecreto) {
-        alert("El número secreto es mayor. ¡Inténtalo de nuevo!");
-    } else {
-        alert("El número secreto es menor. ¡Inténtalo de nuevo!");
+const beer = {
+    x: Math.random() * canvas.width,
+    y: 0,
+    speed: 2
+};
+
+const glass = {
+    x: canvas.width / 2 - 50,
+    y: canvas.height - 100,
+    speed: 4
+};
+
+document.addEventListener('keydown', function(event) {
+    switch (event.keyCode) {
+        case 37: // Flecha izquierda
+            glass.x -= glass.speed;
+            break;
+        case 39: // Flecha derecha
+            glass.x += glass.speed;
+            break;
+    }
+});
+
+function update() {
+    beer.y += beer.speed;
+
+    if (beer.y + beerImg.height > glass.y && beer.y < glass.y + glassImg.height && beer.x + beerImg.width > glass.x && beer.x < glass.x + glassImg.width) {
+        beer.x = Math.random() * canvas.width;
+        beer.y = 0;
+    }
+
+    if (beer.y > canvas.height) {
+        beer.x = Math.random() * canvas.width;
+        beer.y = 0;
     }
 }
 
-function reiniciarJuego() {
-    numeroSecreto = Math.floor(Math.random() * 100) + 1;
-    intentos = 0;
-    document.getElementById("numero").value = '';
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.drawImage(beerImg, beer.x, beer.y);
+    ctx.drawImage(glassImg, glass.x, glass.y);
 }
+
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+loop();
