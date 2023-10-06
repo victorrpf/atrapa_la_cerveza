@@ -19,7 +19,7 @@ const glass = {
     speed: 12
 };
 
-let beerCounter = 0;
+let score = 0;
 
 document.addEventListener('keydown', function(event) {
     switch (event.keyCode) {
@@ -32,13 +32,25 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+function playBeep() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+
+    oscillator.type = 'sine'; // Tipo de onda
+    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); // Frecuencia en Hz (440Hz es un tono medio, como un la)
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.5); // Duración del beep en segundos
+}
+
 function update() {
     beer.y += beer.speed;
 
     if (beer.y + beerImg.height > glass.y && beer.y < glass.y + glassImg.height && beer.x + beerImg.width > glass.x && beer.x < glass.x + glassImg.width) {
+        playBeep();
         beer.x = Math.random() * canvas.width;
         beer.y = 0;
-        beerCounter++;
+        score += 1;
     }
 
     if (beer.y > canvas.height) {
@@ -53,10 +65,9 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y);
     ctx.drawImage(glassImg, glass.x, glass.y);
 
-    // Dibujar contador de cervezas
-    ctx.font = '24px Caveat';
-    ctx.fillStyle = 'black';
-    ctx.fillText('Cervezas capturadas: ' + beerCounter, 10, 30);
+    ctx.font = "24px Caveat";
+    ctx.fillStyle = "#000";
+    ctx.fillText("Puntuación: " + score, 10, canvas.height - 20);
 }
 
 function loop() {
