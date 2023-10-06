@@ -19,6 +19,8 @@ const glass = {
     speed: 12
 };
 
+let beerCounter = 0;
+
 document.addEventListener('keydown', function(event) {
     switch (event.keyCode) {
         case 37: // Flecha izquierda
@@ -36,6 +38,7 @@ function update() {
     if (beer.y + beerImg.height > glass.y && beer.y < glass.y + glassImg.height && beer.x + beerImg.width > glass.x && beer.x < glass.x + glassImg.width) {
         beer.x = Math.random() * canvas.width;
         beer.y = 0;
+        beerCounter++;
     }
 
     if (beer.y > canvas.height) {
@@ -49,6 +52,11 @@ function draw() {
 
     ctx.drawImage(beerImg, beer.x, beer.y);
     ctx.drawImage(glassImg, glass.x, glass.y);
+
+    // Dibujar contador de cervezas
+    ctx.font = '24px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText('Cervezas capturadas: ' + beerCounter, 10, 30);
 }
 
 function loop() {
