@@ -54,7 +54,7 @@ function draw() {
     ctx.drawImage(glassImg, glass.x, glass.y);
 
     // Dibujar contador de cervezas
-    ctx.font = '24px Arial';
+    ctx.font = '24px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Cervezas capturadas: ' + beerCounter, 10, 30);
 }
