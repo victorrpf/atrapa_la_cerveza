@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const beerImg = new Image();
 const glassImg = new Image();
 
-beerImg.src = 'https://drive.google.com/uc?export=view&id=1j3vrRMP1ZhxBKBEWSueosWyXfah85e2k';
+beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
 glassImg.src = 'https://drive.google.com/uc?export=view&id=1Or2UmKvoHAjIYImIScNJaLLtZXCdRACX';
 
 const beer = {
