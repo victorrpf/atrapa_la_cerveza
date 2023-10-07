@@ -4,6 +4,13 @@ const ctx = canvas.getContext('2d');
 const beerImg = new Image();
 const glassImg = new Image();
 
+// Botón de inicio
+const startButton = document.getElementById('startButton');
+startButton.addEventListener('click', function() {
+    startButton.style.display = 'none'; // Ocultamos el botón
+    initGame(); // Iniciamos el juego
+});
+
 // Definir proporciones iniciales
 const BEER_PROPORTION = 0.15;
 const GLASS_PROPORTION = 0.2;
@@ -38,7 +45,6 @@ document.addEventListener('keydown', function(event) {
 });
 
 let touchStartX;
-
 canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
 }, false);
@@ -100,7 +106,6 @@ function update() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
