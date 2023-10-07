@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego de Cervezas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet"> <!-- Añadir este enlace -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            text-align: center; /* Centra el contenido de texto en el cuerpo del documento */
+        body, html {
+            overflow: hidden; /* Esto evita las barras de desplazamiento */
+            width: 100%;
+            height: 100%;
             margin: 0;
             padding: 0;
+        }
+
+        body {
+            text-align: center; /* Centra el contenido de texto en el cuerpo del documento */
             font-family: 'Caveat', cursive; /* Esto es opcional, pero te permitirá que todo el contenido del cuerpo use la fuente 'Caveat' por defecto */
         }
 
@@ -22,20 +29,18 @@
             display: block; /* Esto hará que el canvas se comporte como un bloque y no como un elemento en línea. */
             margin: 20px auto; /* Esto centrará el canvas horizontalmente. */
         }
-
-        #startButton {
-            margin: 20px auto; /* Centra el botón horizontalmente */
-            padding: 10px 15px; /* Añade relleno alrededor del texto del botón */
-            font-size: 16px; /* Define el tamaño de la fuente del botón */
-            cursor: pointer; /* Cambia el cursor a un dedo señalando cuando pasas el mouse por encima */
-        }
     </style>
 </head>
 <body>
     <h2>El juego del bar: ¡Atrapa la cerveza!</h2>
+
+    <!-- Botón de inicio -->
     <button id="startButton">Iniciar Juego</button>
-    <!-- el tamaño lo definiré en el JS para ajustar la pantalla en función de la ventana o viewport -->
+
+    <!-- Canvas para el juego -->
     <canvas id="canvas"></canvas>
+
+    <!-- Referencia al archivo JavaScript -->
     <script src="juego.js"></script>
 </body>
 </html>
