@@ -8,7 +8,7 @@ beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwI
 glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
 
 const beer = {
-    x: Math.random() * canvas.width,
+    x: Math.random() * (canvas.width - beerImg.width),
     y: 0,
     speed: 2
 };
