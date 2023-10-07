@@ -69,9 +69,13 @@ function resizeCanvas() {
     glassWidth = canvas.width * GLASS_PROPORTION;
     glassHeight = glassWidth * (glassImg.height / glassImg.width);
 
+    // Actualizar las posiciones iniciales de beer y glass después de redimensionar
     beer.x = Math.random() * (canvas.width - beerWidth);
     glass.x = canvas.width / 2 - glassWidth / 2;
-    glass.y = canvas.height - glassHeight;
+
+    // Asegurarse de que el objeto 'glass' esté en la parte inferior del canvas, 
+    // menos su altura, para que se muestre completamente.
+    glass.y = canvas.height - glassHeight; 
 }
 
 function imagesAreLoaded() {
