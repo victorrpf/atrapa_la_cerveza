@@ -4,19 +4,13 @@ const ctx = canvas.getContext('2d');
 const beerImg = new Image();
 const glassImg = new Image();
 
-// Botón de inicio
-const startButton = document.getElementById('startButton');
-startButton.addEventListener('click', function() {
-    startButton.style.display = 'none'; // Ocultamos el botón
-    initGame(); // Iniciamos el juego
-});
-
 // Definir proporciones iniciales
-const BEER_PROPORTION = 0.1;
+const BEER_PROPORTION = 0.15;
 const GLASS_PROPORTION = 0.2;
 
 let beerWidth, beerHeight, glassWidth, glassHeight;
 let imagesLoaded = 0; // Contador para las imágenes cargadas
+let gameStarted = false; // Agrega esta variable al inicio de tu código
 
 const beer = {
     x: 0,
@@ -81,7 +75,6 @@ function resizeCanvas() {
     glass.y = canvas.height - glassHeight;
 }
 
-// Inicializamos la dimensión del canvas de inmediato
 resizeCanvas();
 
 function update() {
@@ -127,7 +120,7 @@ function loop() {
 }
 
 function initGame() {
-    if (imagesLoaded === 2) { // Verifica si ambas imágenes se han cargado
+    if (imagesLoaded === 2 && gameStarted) { 
         loop();
     }
 }
@@ -145,5 +138,12 @@ glassImg.onload = function() {
 beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
 glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
 
-// Evento para manejar el cambio de tamaño
 window.addEventListener('resize', resizeCanvas);
+
+// Botón de inicio
+const startButton = document.getElementById('startButton');
+startButton.addEventListener('click', function() {
+    startButton.style.display = 'none'; // Ocultamos el botón
+    gameStarted = true;
+    initGame(); // Iniciamos el juego
+});
