@@ -6,11 +6,21 @@
     <title>Juego de Cervezas</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet"> <!-- Añadir este enlace -->
     <style>
+        body {
+            text-align: center; /* Centra el contenido de texto en el cuerpo del documento */
+            margin: 0;
+            padding: 0;
+            font-family: 'Caveat', cursive; /* Esto es opcional, pero te permitirá que todo el contenido del cuerpo use la fuente 'Caveat' por defecto */
+        }
+
+        h2 {
+            margin-top: 20px; /* Añade un margen superior para separar el título del borde superior de la ventana */
+        }
+
         #canvas {
             background-color: #eaeaea;
-        }
-        h2 {
-            font-family: 'Caveat', cursive; /* Aplicar la fuente al h2 */
+            display: block; /* Esto hará que el canvas se comporte como un bloque y no como un elemento en línea. */
+            margin: 20px auto; /* Esto centrará el canvas horizontalmente. */
         }
     </style>
 </head>
