@@ -22,10 +22,18 @@
             display: block; /* Esto hará que el canvas se comporte como un bloque y no como un elemento en línea. */
             margin: 20px auto; /* Esto centrará el canvas horizontalmente. */
         }
+
+        #startButton {
+            margin: 20px auto; /* Centra el botón horizontalmente */
+            padding: 10px 15px; /* Añade relleno alrededor del texto del botón */
+            font-size: 16px; /* Define el tamaño de la fuente del botón */
+            cursor: pointer; /* Cambia el cursor a un dedo señalando cuando pasas el mouse por encima */
+        }
     </style>
 </head>
 <body>
     <h2>El juego del bar: ¡Atrapa la cerveza!</h2>
+    <button id="startButton">Iniciar Juego</button>
     <!-- el tamaño lo definiré en el JS para ajustar la pantalla en función de la ventana o viewport -->
     <canvas id="canvas"></canvas>
     <script src="juego.js"></script>
