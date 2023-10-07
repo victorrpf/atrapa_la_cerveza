@@ -7,17 +7,19 @@ const glassImg = new Image();
 beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
 glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
 
-const beer = {
-    x: 0,
-    y: 0,
-    speed: 2
-};
+// Definir proporciones iniciales
+const BEER_PROPORTION = 0.1;  
+const GLASS_PROPORTION = 0.2; 
 
-const glass = {
-    x: 0,
-    y: 0,
-    speed: 16
-};
+let beerWidth, beerHeight, glassWidth, glassHeight;
+
+function resizeImages() {
+    beerWidth = canvas.width * BEER_PROPORTION;
+    beerHeight = beerWidth * (beerImg.naturalHeight / beerImg.naturalWidth);
+
+    glassWidth = canvas.width * GLASS_PROPORTION;
+    glassHeight = glassWidth * (glassImg.naturalHeight / glassImg.naturalWidth);
+}
 
 function resizeCanvas() {
     let windowWidth = window.innerWidth;
@@ -32,24 +34,34 @@ function resizeCanvas() {
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
 
-    // Actualizar las posiciones iniciales de beer y glass después de redimensionar
-    beer.x = Math.random() * (canvas.width - beerImg.width);
-    glass.x = canvas.width / 2 - 100;
-    glass.y = canvas.height - 250;
+    resizeImages();
+
+    beer.x = Math.random() * (canvas.width - beerWidth);
+    glass.x = canvas.width / 2 - glassWidth / 2;
+    glass.y = canvas.height - glassHeight;
 }
 
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+const beer = {
+    x: 0, 
+    y: 0,
+    speed: 2
+};
+
+const glass = {
+    x: 0,
+    y: 0,
+    speed: 16
+};
 
 let score = 0;
 let missedBeers = 0;
 
 document.addEventListener('keydown', function(event) {
     switch (event.keyCode) {
-        case 37: // Flecha izquierda
+        case 37: 
             glass.x -= glass.speed;
             break;
-        case 39: // Flecha derecha
+        case 39: 
             glass.x += glass.speed;
             break;
     }
@@ -64,13 +76,13 @@ canvas.addEventListener('touchmove', function(e) {
     e.preventDefault();
     let touchEndX = e.touches[0].clientX;
     let distanceX = touchEndX - touchStartX;
-    
-    if (distanceX < 0) { // Movimiento hacia la izquierda
+
+    if (distanceX < 0) {
         glass.x += Math.max(distanceX, -glass.speed);
-    } else { // Movimiento hacia la derecha
+    } else {
         glass.x += Math.min(distanceX, glass.speed);
     }
-    
+
     touchStartX = touchEndX;
 }, false);
 
@@ -99,8 +111,8 @@ function playFailSound() {
 function update() {
     beer.y += beer.speed;
 
-    if (beer.y + beerImg.height > glass.y && beer.y < glass.y + glassImg.height && beer.x + beerImg.width > glass.x && beer.x < glass.x + glassImg.width) {
-        beer.x = Math.random() * (canvas.width - beerImg.width);
+    if (beer.y + beerHeight > glass.y && beer.y < glass.y + glassHeight && beer.x + beerWidth > glass.x && beer.x < glass.x + glassWidth) {
+        beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
         score++;
         playBeep();
@@ -109,23 +121,24 @@ function update() {
     if (beer.y > canvas.height) {
         playFailSound();
         missedBeers++;
-        beer.x = Math.random() * (canvas.width - beerImg.width);
+        beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
     }
 
     if (glass.x < 0) glass.x = 0;
-    if (glass.x + glassImg.width > canvas.width) glass.x = canvas.width - glassImg.width;
+    if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
 }
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(beerImg, beer.x, beer.y);
-    ctx.drawImage(glassImg, glass.x, glass.y);
+
+    ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
+    ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
     ctx.font = '24px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas: ' + score, 10, 25);
-    
+
     const missedText = 'Perdidas: ' + missedBeers;
     const textWidth = ctx.measureText(missedText).width;
     ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
@@ -137,4 +150,6 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
+resizeCanvas();
 loop();
+window.addEventListener('resize', resizeCanvas);
