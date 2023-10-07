@@ -20,7 +20,7 @@ const glass = {
 };
 
 let score = 0;
-let missedBeers = 0; // Nuevo contador
+let missedBeers = 0;
 
 document.addEventListener('keydown', function(event) {
     switch (event.keyCode) {
@@ -32,6 +32,26 @@ document.addEventListener('keydown', function(event) {
             break;
     }
 });
+
+let touchStartX;
+
+canvas.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+}, false);
+
+canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    let touchEndX = e.touches[0].clientX;
+    let distanceX = touchEndX - touchStartX;
+    
+    if (distanceX < 0) { // Movimiento hacia la izquierda
+        glass.x += Math.max(distanceX, -glass.speed);
+    } else { // Movimiento hacia la derecha
+        glass.x += Math.min(distanceX, glass.speed);
+    }
+    
+    touchStartX = touchEndX;
+}, false);
 
 function playBeep() {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -49,7 +69,7 @@ function playFailSound() {
     const oscillator = audioCtx.createOscillator();
 
     oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(415.30, audioCtx.currentTime); 
+    oscillator.frequency.setValueAtTime(415.30, audioCtx.currentTime);
     oscillator.connect(audioCtx.destination);
     oscillator.start();
     oscillator.stop(audioCtx.currentTime + 0.1);
@@ -59,7 +79,7 @@ function update() {
     beer.y += beer.speed;
 
     if (beer.y + beerImg.height > glass.y && beer.y < glass.y + glassImg.height && beer.x + beerImg.width > glass.x && beer.x < glass.x + glassImg.width) {
-        beer.x = Math.random() * canvas.width;
+        beer.x = Math.random() * (canvas.width - beerImg.width);
         beer.y = 0;
         score++;
         playBeep();
@@ -67,10 +87,14 @@ function update() {
 
     if (beer.y > canvas.height) {
         playFailSound();
-        missedBeers++; 
-        beer.x = Math.random() * canvas.width;
+        missedBeers++;
+        beer.x = Math.random() * (canvas.width - beerImg.width);
         beer.y = 0;
     }
+
+    // Asegurando que el vaso no salga de los límites:
+    if (glass.x < 0) glass.x = 0;
+    if (glass.x + glassImg.width > canvas.width) glass.x = canvas.width - glassImg.width;
 }
 
 function draw() {
@@ -81,7 +105,7 @@ function draw() {
 
     // Mostrar el contador "Atrapadas" en la esquina superior izquierda
     ctx.font = '24px Caveat';
-    ctx.fillStyle = 'black'; // Cambio de color
+    ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas: ' + score, 10, 25);
     
     // Mostrar el contador "Perdidas" en la esquina superior derecha
