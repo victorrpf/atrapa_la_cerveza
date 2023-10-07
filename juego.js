@@ -12,7 +12,7 @@ startButton.addEventListener('click', function() {
 });
 
 // Definir proporciones iniciales
-const BEER_PROPORTION = 0.15;
+const BEER_PROPORTION = 0.1;
 const GLASS_PROPORTION = 0.2;
 
 let beerWidth, beerHeight, glassWidth, glassHeight;
