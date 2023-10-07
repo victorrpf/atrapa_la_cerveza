@@ -9,8 +9,8 @@ const BEER_PROPORTION = 0.15;
 const GLASS_PROPORTION = 0.2;
 
 let beerWidth, beerHeight, glassWidth, glassHeight;
-let imagesLoaded = 0; // Contador para las imágenes cargadas
-let gameStarted = false; // Agrega esta variable al inicio de tu código
+let imagesLoaded = 0;
+let gameStarted = false;
 
 const beer = {
     x: 0,
@@ -47,13 +47,13 @@ canvas.addEventListener('touchmove', function(e) {
     e.preventDefault();
     let touchEndX = e.touches[0].clientX;
     let distanceX = touchEndX - touchStartX;
-    
+
     if (distanceX < 0) { // Movimiento hacia la izquierda
         glass.x += Math.max(distanceX, -glass.speed);
     } else { // Movimiento hacia la derecha
         glass.x += Math.min(distanceX, glass.speed);
     }
-    
+
     touchStartX = touchEndX;
 }, false);
 
@@ -69,13 +69,32 @@ function resizeCanvas() {
     glassWidth = canvas.width * GLASS_PROPORTION;
     glassHeight = glassWidth * (glassImg.height / glassImg.width);
 
-    // Actualizar las posiciones iniciales de beer y glass después de redimensionar
     beer.x = Math.random() * (canvas.width - beerWidth);
     glass.x = canvas.width / 2 - glassWidth / 2;
     glass.y = canvas.height - glassHeight;
 }
 
-resizeCanvas();
+function imagesAreLoaded() {
+    if (imagesLoaded === 2) {
+        resizeCanvas();
+        if (gameStarted) {
+            loop();
+        }
+    }
+}
+
+beerImg.onload = function() {
+    imagesLoaded++;
+    imagesAreLoaded();
+};
+
+glassImg.onload = function() {
+    imagesLoaded++;
+    imagesAreLoaded();
+};
+
+beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
+glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
 
 function update() {
     beer.y += beer.speed;
@@ -92,7 +111,6 @@ function update() {
         beer.y = 0;
     }
 
-    // Asegurando que el vaso no salga de los límites:
     if (glass.x < 0) glass.x = 0;
     if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
 }
@@ -102,12 +120,10 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
-    // Mostrar el contador "Atrapadas" en la esquina superior izquierda
     ctx.font = '24px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas: ' + score, 10, 25);
-    
-    // Mostrar el contador "Perdidas" en la esquina superior derecha
+
     const missedText = 'Perdidas: ' + missedBeers;
     const textWidth = ctx.measureText(missedText).width;
     ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
@@ -119,31 +135,14 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-function initGame() {
-    if (imagesLoaded === 2 && gameStarted) { 
-        loop();
-    }
-}
-
-beerImg.onload = function() {
-    imagesLoaded++;
-    initGame();
-};
-
-glassImg.onload = function() {
-    imagesLoaded++;
-    initGame();
-};
-
-beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
-glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
-
 window.addEventListener('resize', resizeCanvas);
 
 // Botón de inicio
 const startButton = document.getElementById('startButton');
 startButton.addEventListener('click', function() {
-    startButton.style.display = 'none'; // Ocultamos el botón
+    startButton.style.display = 'none';
     gameStarted = true;
-    initGame(); // Iniciamos el juego
+    if (imagesLoaded === 2) {
+        loop();
+    }
 });
