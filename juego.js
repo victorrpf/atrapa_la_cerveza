@@ -8,16 +8,38 @@ beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwI
 glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
 
 const beer = {
-    x: Math.random() * (canvas.width - beerImg.width),
+    x: 0,
     y: 0,
     speed: 2
 };
 
 const glass = {
-    x: canvas.width / 2 - 100,
-    y: canvas.height - 250,
+    x: 0,
+    y: 0,
     speed: 16
 };
+
+function resizeCanvas() {
+    let windowWidth = window.innerWidth;
+    let canvasWidth = windowWidth;
+    let canvasHeight = (canvasWidth * 640) / 960;
+
+    if (canvasHeight > window.innerHeight) {
+        canvasHeight = window.innerHeight;
+        canvasWidth = (canvasHeight * 960) / 640;
+    }
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    // Actualizar las posiciones iniciales de beer y glass después de redimensionar
+    beer.x = Math.random() * (canvas.width - beerImg.width);
+    glass.x = canvas.width / 2 - 100;
+    glass.y = canvas.height - 250;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
 let score = 0;
 let missedBeers = 0;
@@ -34,7 +56,6 @@ document.addEventListener('keydown', function(event) {
 });
 
 let touchStartX;
-
 canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
 }, false);
@@ -92,23 +113,19 @@ function update() {
         beer.y = 0;
     }
 
-    // Asegurando que el vaso no salga de los límites:
     if (glass.x < 0) glass.x = 0;
     if (glass.x + glassImg.width > canvas.width) glass.x = canvas.width - glassImg.width;
 }
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.drawImage(beerImg, beer.x, beer.y);
     ctx.drawImage(glassImg, glass.x, glass.y);
 
-    // Mostrar el contador "Atrapadas" en la esquina superior izquierda
     ctx.font = '24px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas: ' + score, 10, 25);
     
-    // Mostrar el contador "Perdidas" en la esquina superior derecha
     const missedText = 'Perdidas: ' + missedBeers;
     const textWidth = ctx.measureText(missedText).width;
     ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
