@@ -4,45 +4,15 @@ const ctx = canvas.getContext('2d');
 const beerImg = new Image();
 const glassImg = new Image();
 
-beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
-glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
-
 // Definir proporciones iniciales
-const BEER_PROPORTION = 0.1;  
-const GLASS_PROPORTION = 0.2; 
+const BEER_PROPORTION = 0.2;
+const GLASS_PROPORTION = 0.3;
 
 let beerWidth, beerHeight, glassWidth, glassHeight;
-
-function resizeImages() {
-    beerWidth = canvas.width * BEER_PROPORTION;
-    beerHeight = beerWidth * (beerImg.naturalHeight / beerImg.naturalWidth);
-
-    glassWidth = canvas.width * GLASS_PROPORTION;
-    glassHeight = glassWidth * (glassImg.naturalHeight / glassImg.naturalWidth);
-}
-
-function resizeCanvas() {
-    let windowWidth = window.innerWidth;
-    let canvasWidth = windowWidth;
-    let canvasHeight = (canvasWidth * 640) / 960;
-
-    if (canvasHeight > window.innerHeight) {
-        canvasHeight = window.innerHeight;
-        canvasWidth = (canvasHeight * 960) / 640;
-    }
-
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-
-    resizeImages();
-
-    beer.x = Math.random() * (canvas.width - beerWidth);
-    glass.x = canvas.width / 2 - glassWidth / 2;
-    glass.y = canvas.height - glassHeight;
-}
+let imagesLoaded = 0; // Contador para las imágenes cargadas
 
 const beer = {
-    x: 0, 
+    x: 0,
     y: 0,
     speed: 2
 };
@@ -58,16 +28,17 @@ let missedBeers = 0;
 
 document.addEventListener('keydown', function(event) {
     switch (event.keyCode) {
-        case 37: 
+        case 37: // Flecha izquierda
             glass.x -= glass.speed;
             break;
-        case 39: 
+        case 39: // Flecha derecha
             glass.x += glass.speed;
             break;
     }
 });
 
 let touchStartX;
+
 canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
 }, false);
@@ -76,37 +47,36 @@ canvas.addEventListener('touchmove', function(e) {
     e.preventDefault();
     let touchEndX = e.touches[0].clientX;
     let distanceX = touchEndX - touchStartX;
-
-    if (distanceX < 0) {
+    
+    if (distanceX < 0) { // Movimiento hacia la izquierda
         glass.x += Math.max(distanceX, -glass.speed);
-    } else {
+    } else { // Movimiento hacia la derecha
         glass.x += Math.min(distanceX, glass.speed);
     }
-
+    
     touchStartX = touchEndX;
 }, false);
 
-function playBeep() {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioCtx.createOscillator();
+function resizeCanvas() {
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
 
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(1046.50, audioCtx.currentTime);
-    oscillator.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.2);
+    canvas.width = windowWidth;
+    canvas.height = windowHeight;
+
+    beerWidth = canvas.width * BEER_PROPORTION;
+    beerHeight = beerWidth * (beerImg.height / beerImg.width);
+    glassWidth = canvas.width * GLASS_PROPORTION;
+    glassHeight = glassWidth * (glassImg.height / glassImg.width);
+
+    // Actualizar las posiciones iniciales de beer y glass después de redimensionar
+    beer.x = Math.random() * (canvas.width - beerWidth);
+    glass.x = canvas.width / 2 - glassWidth / 2;
+    glass.y = canvas.height - glassHeight;
 }
 
-function playFailSound() {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioCtx.createOscillator();
-
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(415.30, audioCtx.currentTime);
-    oscillator.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.1);
-}
+// Inicializamos la dimensión del canvas de inmediato
+resizeCanvas();
 
 function update() {
     beer.y += beer.speed;
@@ -115,16 +85,15 @@ function update() {
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
         score++;
-        playBeep();
     }
 
     if (beer.y > canvas.height) {
-        playFailSound();
         missedBeers++;
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
     }
 
+    // Asegurando que el vaso no salga de los límites:
     if (glass.x < 0) glass.x = 0;
     if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
 }
@@ -135,10 +104,12 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
+    // Mostrar el contador "Atrapadas" en la esquina superior izquierda
     ctx.font = '24px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas: ' + score, 10, 25);
-
+    
+    // Mostrar el contador "Perdidas" en la esquina superior derecha
     const missedText = 'Perdidas: ' + missedBeers;
     const textWidth = ctx.measureText(missedText).width;
     ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
@@ -150,6 +121,24 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-resizeCanvas();
-loop();
+function initGame() {
+    if (imagesLoaded === 2) { // Verifica si ambas imágenes se han cargado
+        loop();
+    }
+}
+
+beerImg.onload = function() {
+    imagesLoaded++;
+    initGame();
+};
+
+glassImg.onload = function() {
+    imagesLoaded++;
+    initGame();
+};
+
+beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
+glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
+
+// Evento para manejar el cambio de tamaño
 window.addEventListener('resize', resizeCanvas);
