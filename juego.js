@@ -5,8 +5,8 @@ const beerImg = new Image();
 const glassImg = new Image();
 
 // Definir proporciones iniciales
-const BEER_PROPORTION = 0.15;
-const GLASS_PROPORTION = 0.2;
+const BEER_PROPORTION = 0.2;
+const GLASS_PROPORTION = 0.25;
 
 let beerWidth, beerHeight, glassWidth, glassHeight;
 let imagesLoaded = 0;
