@@ -1,6 +1,9 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+canvas.width = 300;
+canvas.height = 300;
+
 const beerImg = new Image();
 const glassImg = new Image();
 
@@ -8,19 +11,22 @@ const glassImg = new Image();
 const BEER_PROPORTION = 0.2;
 const GLASS_PROPORTION = 0.25;
 
-let beerWidth, beerHeight, glassWidth, glassHeight;
+let beerWidth = canvas.width * BEER_PROPORTION;
+let glassWidth = canvas.width * GLASS_PROPORTION;
+let beerHeight, glassHeight; // Estas se definirán cuando las imágenes se carguen
+
 let imagesLoaded = 0;
 let gameStarted = false;
 
 const beer = {
-    x: 0,
+    x: Math.random() * (canvas.width - beerWidth),
     y: 0,
     speed: 2
 };
 
 const glass = {
-    x: 0,
-    y: 0,
+    x: canvas.width / 2 - glassWidth / 2,
+    y: canvas.height - glassHeight, // Definiremos glassHeight más tarde
     speed: 16
 };
 
@@ -57,42 +63,21 @@ canvas.addEventListener('touchmove', function(e) {
     touchStartX = touchEndX;
 }, false);
 
-function resizeCanvas() {
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
-
-    canvas.width = windowWidth;
-    canvas.height = windowHeight;
-
-    beerWidth = canvas.width * BEER_PROPORTION;
-    beerHeight = beerWidth * (beerImg.height / beerImg.width);
-    glassWidth = canvas.width * GLASS_PROPORTION;
-    glassHeight = glassWidth * (glassImg.height / glassImg.width);
-
-    // Actualizar las posiciones iniciales de beer y glass después de redimensionar
-    beer.x = Math.random() * (canvas.width - beerWidth);
-    glass.x = canvas.width / 2 - glassWidth / 2;
-
-    // Asegurarse de que el objeto 'glass' esté en la parte inferior del canvas, 
-    // menos su altura, para que se muestre completamente.
-    glass.y = canvas.height - glassHeight; 
-}
-
 function imagesAreLoaded() {
-    if (imagesLoaded === 2) {
-        resizeCanvas();
-        if (gameStarted) {
-            loop();
-        }
+    if (imagesLoaded === 2 && gameStarted) {
+        loop();
     }
 }
 
 beerImg.onload = function() {
+    beerHeight = beerWidth * (beerImg.height / beerImg.width);
     imagesLoaded++;
     imagesAreLoaded();
 };
 
 glassImg.onload = function() {
+    glassHeight = glassWidth * (glassImg.height / glassImg.width);
+    glass.y = canvas.height - glassHeight; // Aquí se define correctamente la posición y de glass
     imagesLoaded++;
     imagesAreLoaded();
 };
@@ -124,7 +109,7 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
-    ctx.font = '24px Caveat';
+    ctx.font = '20px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas: ' + score, 10, 25);
 
@@ -138,8 +123,6 @@ function loop() {
     draw();
     requestAnimationFrame(loop);
 }
-
-window.addEventListener('resize', resizeCanvas);
 
 // Botón de inicio
 const startButton = document.getElementById('startButton');
