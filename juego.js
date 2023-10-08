@@ -9,7 +9,7 @@ const glassImg = new Image();
 
 // Definir proporciones iniciales
 const BEER_PROPORTION = 0.2;
-const GLASS_PROPORTION = 0.25;
+const GLASS_PROPORTION = 0.3;
 
 let beerWidth = canvas.width * BEER_PROPORTION;
 let glassWidth = canvas.width * GLASS_PROPORTION;
