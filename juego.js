@@ -1,8 +1,8 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 300;
-canvas.height = 300;
+canvas.width = 350;
+canvas.height = 400;
 
 const beerImg = new Image();
 const glassImg = new Image();
@@ -116,16 +116,16 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
-    ctx.font = '20px Caveat';
+    ctx.font = '18px Caveat';
     ctx.fillStyle = 'black';
-    ctx.fillText('Atrapadas: ' + score, 10, 25);
+    ctx.fillText('Atrapadas ' + score, 10, 25);
 
-    const missedText = 'Perdidas: ' + missedBeers;
+    const missedText = 'Perdidas ' + missedBeers;
     const textWidth = ctx.measureText(missedText).width;
     ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
 
     // Dibujo del contador de incrementos de velocidad en el centro
-    const speedText = 'Velocidad: +' + speedIncrements;
+    const speedText = 'Velocidad +' + speedIncrements;
     const speedTextWidth = ctx.measureText(speedText).width;
     ctx.fillText(speedText, (canvas.width - speedTextWidth) / 2, 25);
 }
