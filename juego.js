@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 320;
+canvas.width = 300;
 canvas.height = 300;
 
 const beerImg = new Image();
@@ -116,7 +116,7 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
-    ctx.font = '18px Caveat';
+    ctx.font = '17px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas ' + score, 10, 25);
 
