@@ -89,24 +89,34 @@ glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80Bwpgg
 function update() {
     beer.y += beer.speed;
 
-    if (beer.y + beerHeight > glass.y && beer.y < glass.y + glassHeight && beer.x + beerWidth > glass.x && beer.x < glass.x + glassWidth) {
+    // Primero verificamos si `beer` ha pasado el punto medio de `glass` y no puede ser atrapado.
+    if (beer.y + (beerHeight / 2) > glass.y + glassHeight) {
+        // Si `beer` ha caído completamente fuera del canvas, entonces aumentamos el contador de missedBeers.
+        if (beer.y > canvas.height) {
+            missedBeers++;
+            beer.x = Math.random() * (canvas.width - beerWidth);
+            beer.y = 0;
+        }
+    } 
+    // Luego, verificamos si `beer` ha sido atrapado por `glass`.
+    else if (
+        beer.y + (beerHeight / 2) > glass.y && 
+        beer.y + (beerHeight / 2) < glass.y + glassHeight && 
+        beer.x + beerWidth > glass.x && 
+        beer.x < glass.x + glassWidth
+    ) {
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
         score++;
 
-        // Verificar si es necesario aumentar la velocidad
+        // Verificar si es necesario aumentar la velocidad.
         if (score % 50 === 0) {
             speedIncrements++;
-            beer.speed += 1; // Aumentar la velocidad en una unidad
+            beer.speed += 1; // Aumentar la velocidad en una unidad.
         }
     }
 
-    if (beer.y > canvas.height) {
-        missedBeers++;
-        beer.x = Math.random() * (canvas.width - beerWidth);
-        beer.y = 0;
-    }
-
+    // Asegurarse de que `glass` no se salga de los límites del canvas.
     if (glass.x < 0) glass.x = 0;
     if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
 }
