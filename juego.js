@@ -15,6 +15,7 @@ let beerWidth = canvas.width * BEER_PROPORTION;
 let glassWidth = canvas.width * GLASS_PROPORTION;
 let beerHeight, glassHeight; // Estas se definirán cuando las imágenes se carguen
 
+let speedIncrements = 0; // Contador para los incrementos de velocidad
 let imagesLoaded = 0;
 let gameStarted = false;
 
@@ -92,6 +93,12 @@ function update() {
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
         score++;
+
+        // Verificar si es necesario aumentar la velocidad
+        if (score % 50 === 0) {
+            speedIncrements++;
+            beer.speed += 1; // Aumentar la velocidad en una unidad
+        }
     }
 
     if (beer.y > canvas.height) {
@@ -116,6 +123,11 @@ function draw() {
     const missedText = 'Perdidas: ' + missedBeers;
     const textWidth = ctx.measureText(missedText).width;
     ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
+
+    // Dibujo del contador de incrementos de velocidad en el centro
+    const speedText = 'Velocidad: +' + speedIncrements;
+    const speedTextWidth = ctx.measureText(speedText).width;
+    ctx.fillText(speedText, (canvas.width - speedTextWidth) / 2, 25);
 }
 
 function loop() {
