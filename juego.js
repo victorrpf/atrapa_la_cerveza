@@ -28,7 +28,7 @@ const beer = {
 const glass = {
     x: canvas.width / 2 - glassWidth / 2,
     y: canvas.height - glassHeight, // Definiremos glassHeight más tarde
-    speed: 16
+    speed: 8
 };
 
 let score = 0;
