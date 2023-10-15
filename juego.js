@@ -144,13 +144,4 @@ function loop() {
     update();
     draw();
     requestAnimationFrame(loop);
-}
-
-// Botón de inicio
-const startButton = document.getElementById('startButton');
-startButton.addEventListener('click', function() {
-    gameStarted = true;
-    if (imagesLoaded === 2) {
-        loop();
-    }
 });
