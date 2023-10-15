@@ -40,7 +40,7 @@
     <!-- Modificaciones en el script inline -->
     <script>
         let gamePaused = false;
-
+        
         const startButton = document.getElementById('startButton');
         startButton.addEventListener('click', function() {
             if (startButton.textContent === "Iniciar Juego") {
@@ -58,7 +58,7 @@
                 startButton.textContent = "STOP";
             }
         });
-
+        
         function loop() {
             if (!gamePaused) {
                 update();
