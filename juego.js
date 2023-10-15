@@ -149,7 +149,6 @@ function loop() {
 // Botón de inicio
 const startButton = document.getElementById('startButton');
 startButton.addEventListener('click', function() {
-    startButton.style.display = 'none';
     gameStarted = true;
     if (imagesLoaded === 2) {
         loop();
