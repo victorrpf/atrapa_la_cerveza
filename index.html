@@ -36,5 +36,36 @@
 
     <!-- Referencia al archivo JavaScript -->
     <script src="juego.js"></script>
+
+    <!-- Modificaciones en el script inline -->
+    <script>
+        let gamePaused = false;
+
+        const startButton = document.getElementById('startButton');
+        startButton.addEventListener('click', function() {
+            if (startButton.textContent === "Iniciar Juego") {
+                gameStarted = true;
+                if (imagesLoaded === 2) {
+                    loop();
+                }
+                startButton.textContent = "STOP";
+            } else if (startButton.textContent === "STOP") {
+                gamePaused = true;
+                startButton.textContent = "Continuar";
+            } else {
+                gamePaused = false;
+                loop();  // Continuar el juego
+                startButton.textContent = "STOP";
+            }
+        });
+
+        function loop() {
+            if (!gamePaused) {
+                update();
+                draw();
+                requestAnimationFrame(loop);
+            }
+        }
+    </script>
 </body>
 </html>
