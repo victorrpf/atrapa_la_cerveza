@@ -141,7 +141,9 @@ function draw() {
 }
 
 function loop() {
-    update();
-    draw();
-    requestAnimationFrame(loop);
+    if (!gamePaused) {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+    }
 });
