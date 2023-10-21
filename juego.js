@@ -140,6 +140,26 @@ function draw() {
     ctx.fillText(speedText, (canvas.width - speedTextWidth) / 2, 25);
 }
 
+let gamePaused = false;
+
+const startButton = document.getElementById('startButton');
+startButton.addEventListener('click', function() {
+    if (startButton.textContent === "Iniciar Juego") {
+        gameStarted = true;
+        if (imagesLoaded === 2) {
+            loop();
+        }
+        startButton.textContent = "STOP";
+    } else if (startButton.textContent === "STOP") {
+        gamePaused = true;
+        startButton.textContent = "Continuar";
+    } else {
+        gamePaused = false;
+        loop();
+        startButton.textContent = "STOP";
+    }
+});
+
 function loop() {
     if (!gamePaused) {
         update();
