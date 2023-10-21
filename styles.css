@@ -1,0 +1,24 @@
+body, html {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    text-align: center;
+    font-family: 'Caveat', cursive;
+}
+
+#canvas {
+    background-color: #eaeaea;
+    display: block;
+    margin: 20px auto;
+}
+
+#startButton {
+    padding: 10px 20px; /* Añade padding al botón */
+    font-size: 16px; /* Ajusta el tamaño de fuente */
+    cursor: pointer; /* Cambia el cursor a un puntero */
+}
