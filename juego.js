@@ -22,13 +22,13 @@ let gameStarted = false;
 const beer = {
     x: Math.random() * (canvas.width - beerWidth),
     y: 0,
-    speed: 2
+    speed: 1
 };
 
 const glass = {
     x: canvas.width / 2 - glassWidth / 2,
     y: canvas.height - glassHeight, // Definiremos glassHeight más tarde
-    speed: 8
+    speed: 10
 };
 
 let score = 0;
@@ -110,7 +110,7 @@ function update() {
         score++;
 
         // Verificar si es necesario aumentar la velocidad.
-        if (score % 50 === 0) {
+        if (score % 100 === 0) {
             speedIncrements++;
             beer.speed += 1; // Aumentar la velocidad en una unidad.
         }
@@ -126,7 +126,7 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
-    ctx.font = '17px Caveat';
+    ctx.font = '14px Caveat';
     ctx.fillStyle = 'black';
     ctx.fillText('Atrapadas ' + score, 10, 25);
 
