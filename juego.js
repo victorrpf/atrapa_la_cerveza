@@ -22,7 +22,7 @@ let gameStarted = false;
 const beer = {
     x: Math.random() * (canvas.width - beerWidth),
     y: 0,
-    speed: 1
+    speed: 2
 };
 
 const glass = {
