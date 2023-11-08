@@ -1,39 +1,35 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 300;
-canvas.height = 250;
-
-const beerImg = new Image();
-const glassImg = new Image();
-
-// Definir proporciones iniciales
+// Proporciones iniciales
 const BEER_PROPORTION = 0.2;
 const GLASS_PROPORTION = 0.3;
 
-let beerWidth = canvas.width * BEER_PROPORTION;
-let glassWidth = canvas.width * GLASS_PROPORTION;
-let beerHeight, glassHeight; // Estas se definirán cuando las imágenes se carguen
+let beerWidth, glassWidth;
+let beerHeight, glassHeight;
 
-let speedIncrements = 0; // Contador para los incrementos de velocidad
+let speedIncrements = 0;
 let imagesLoaded = 0;
 let gameStarted = false;
+let gamePaused = false;
 
+// Elementos del juego
 const beer = {
-    x: Math.random() * (canvas.width - beerWidth),
+    x: null, // Se definirá después
     y: 0,
     speed: 2
 };
 
 const glass = {
-    x: canvas.width / 2 - glassWidth / 2,
-    y: canvas.height - glassHeight, // Definiremos glassHeight más tarde
+    x: null, // Se definirá después
+    y: null, // Se definirá después
     speed: 10
 };
 
 let score = 0;
 let missedBeers = 0;
 
+// Eventos de teclado
 document.addEventListener('keydown', function(event) {
     switch (event.keyCode) {
         case 37: // Flecha izquierda
@@ -45,6 +41,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// Eventos táctiles
 let touchStartX;
 canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
@@ -64,11 +61,9 @@ canvas.addEventListener('touchmove', function(e) {
     touchStartX = touchEndX;
 }, false);
 
-function imagesAreLoaded() {
-    if (imagesLoaded === 2 && gameStarted) {
-        loop();
-    }
-}
+// Imágenes
+const beerImg = new Image();
+const glassImg = new Image();
 
 beerImg.onload = function() {
     beerHeight = beerWidth * (beerImg.height / beerImg.width);
@@ -78,13 +73,46 @@ beerImg.onload = function() {
 
 glassImg.onload = function() {
     glassHeight = glassWidth * (glassImg.height / glassImg.width);
-    glass.y = canvas.height - glassHeight; // Aquí se define correctamente la posición y de glass
+    glass.y = canvas.height - glassHeight; // Actualiza la posición y de glass
     imagesLoaded++;
     imagesAreLoaded();
 };
 
 beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
 glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
+
+function imagesAreLoaded() {
+    if (imagesLoaded === 2 && gameStarted) {
+        resizeCanvas(); // Asegura que el canvas y los elementos se redimensionen según la imagen cargada
+        loop();
+    }
+}
+
+// Redimensionar el canvas y escalar elementos
+function resizeCanvas() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const scale = Math.min(width / 300, height / 250);
+
+    canvas.width = 300 * scale;
+    canvas.height = 250 * scale;
+
+    beerWidth = canvas.width * BEER_PROPORTION;
+    glassWidth = canvas.width * GLASS_PROPORTION;
+
+    // Ajusta las dimensiones y posiciones según las imágenes cargadas y el tamaño del canvas
+    beerHeight = beerWidth * (beerImg.height / beerImg.width);
+    glassHeight = glassWidth * (glassImg.height / glassImg.width);
+
+    beer.x = Math.random() * (canvas.width - beerWidth);
+    glass.x = canvas.width / 2 - glassWidth / 2;
+    glass.y = canvas.height - glassHeight;
+
+    draw();
+}
+
+window.onload = resizeCanvas;
+window.onresize = resizeCanvas;
 
 function update() {
     beer.y += beer.speed;
@@ -140,8 +168,8 @@ function draw() {
     ctx.fillText(speedText, (canvas.width - speedTextWidth) / 2, 25);
 }
 
-let gamePaused = false;
 
+// Iniciar/pausar el juego
 const startButton = document.getElementById('startButton');
 startButton.addEventListener('click', function() {
     if (startButton.textContent === "Iniciar Juego") {
@@ -151,11 +179,16 @@ startButton.addEventListener('click', function() {
         }
         startButton.textContent = "STOP";
     } else if (startButton.textContent === "STOP") {
-        gamePaused = true;
-        startButton.textContent = "Continuar";
+        gamePaused = !gamePaused;
+        if (!gamePaused) {
+            requestAnimationFrame(loop);
+            startButton.textContent = "Pausa";
+        } else {
+            startButton.textContent = "Continuar";
+        }
     } else {
         gamePaused = false;
-        loop();
+        requestAnimationFrame(loop);
         startButton.textContent = "STOP";
     }
 });
