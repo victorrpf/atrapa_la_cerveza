@@ -18,7 +18,7 @@ body {
 }
 
 #startButton {
-    padding: 10px 20px; /* Añade padding al botón */
+    padding: 5px 5px; /* Añade padding al botón */
     font-size: 16px; /* Ajusta el tamaño de fuente */
     cursor: pointer; /* Cambia el cursor a un puntero */
 }
