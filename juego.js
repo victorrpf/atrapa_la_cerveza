@@ -133,10 +133,18 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
-    ctx.font = '18px Caveat';
+    ctx.font = '14px Caveat';
     ctx.fillStyle = 'black';
-    ctx.fillText(`Score: ${score}`, 10, 50);
-    ctx.fillText(`Missed: ${missedBeers}`, canvas.width - 110, 50);
+    ctx.fillText('Atrapadas ' + score, 10, 25);
+
+    const missedText = 'Perdidas ' + missedBeers;
+    const textWidth = ctx.measureText(missedText).width;
+    ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
+
+    // Dibujo del contador de incrementos de velocidad en el centro
+    const speedText = 'Velocidad +' + speedIncrements;
+    const speedTextWidth = ctx.measureText(speedText).width;
+    ctx.fillText(speedText, (canvas.width - speedTextWidth) / 2, 25);
 }
 
 // Inicio y pausa del juego
