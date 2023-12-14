@@ -105,27 +105,31 @@ glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80Bwpgg
 function update() {
     beer.y += beer.speed;
 
+    // Si la cerveza cae completamente fuera del canvas, aumentar missedBeers
     if (beer.y + beerHeight > canvas.height) {
         missedBeers++;
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
-    } else if (
+    } 
+    // Comprobar si la mitad de la cerveza está sobre el vaso
+    else if (
         beer.x < glass.x + glassWidth &&
         beer.x + beerWidth > glass.x &&
-        beer.y + beerHeight > glass.y &&
-        beer.y < glass.y + glassHeight
+        beer.y + beerHeight / 2 > glass.y &&
+        beer.y + beerHeight / 2 < glass.y + glassHeight
     ) {
         score++;
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
 
-        // Verificar si es necesario aumentar la velocidad.
+        // Aumentar la velocidad cada 100 puntos
         if (score % 100 === 0) {
             speedIncrements++;
-            beer.speed += 1; // Aumentar la velocidad en una unidad.
+            beer.speed += 1;
         }
     }
 
+    // Asegurar que el vaso no se salga de los límites del canvas
     if (glass.x < 0) glass.x = 0;
     if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
 }
