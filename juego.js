@@ -1,90 +1,57 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 250;
-canvas.height = 300;
-
-const beerImg = new Image();
-const glassImg = new Image();
-
-// Definir proporciones iniciales
+// Establecer proporciones iniciales
 const BEER_PROPORTION = 0.2;
 const GLASS_PROPORTION = 0.3;
 
-let beerWidth = canvas.width * BEER_PROPORTION;
-let glassWidth = canvas.width * GLASS_PROPORTION;
-let beerHeight, glassHeight; // Estas se definirán cuando las imágenes se carguen
+let beerWidth, glassWidth, beerHeight, glassHeight; // Estas se definirán en resizeCanvas()
 
 let speedIncrements = 0; // Contador para los incrementos de velocidad
 let imagesLoaded = 0;
 let gameStarted = false;
 
-const beer = {
-    x: Math.random() * (canvas.width - beerWidth),
+// Definir objetos para la cerveza y la copa
+let beer = {
+    x: 0, // La posición x se establecerá en resizeCanvas()
     y: 0,
     speed: 2
 };
 
-const glass = {
-    x: canvas.width / 2 - glassWidth / 2,
-    y: canvas.height - glassHeight, // Definiremos glassHeight más tarde
+let glass = {
+    x: 0, // La posición x se establecerá en resizeCanvas()
+    y: 0, // La posición y se establecerá en resizeCanvas()
     speed: 10
 };
 
 let score = 0;
 let missedBeers = 0;
 
-document.addEventListener('keydown', function(event) {
-    switch (event.keyCode) {
-        case 37: // Flecha izquierda
-            glass.x -= glass.speed;
-            break;
-        case 39: // Flecha derecha
-            glass.x += glass.speed;
-            break;
+// Función de redimensionamiento para ajustar el canvas y elementos del juego
+function resizeCanvas() {
+    // Ajustar el canvas al tamaño de la ventana o contenedor
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Ajustar las dimensiones de la cerveza y la copa
+    beerWidth = canvas.width * BEER_PROPORTION;
+    glassWidth = canvas.width * GLASS_PROPORTION;
+    if (beerImg.complete) {
+        beerHeight = beerWidth * (beerImg.height / beerImg.width);
     }
-});
-
-let touchStartX;
-canvas.addEventListener('touchstart', function(e) {
-    touchStartX = e.touches[0].clientX;
-}, false);
-
-canvas.addEventListener('touchmove', function(e) {
-    e.preventDefault();
-    let touchEndX = e.touches[0].clientX;
-    let distanceX = touchEndX - touchStartX;
-
-    if (distanceX < 0) { // Movimiento hacia la izquierda
-        glass.x += Math.max(distanceX, -glass.speed);
-    } else { // Movimiento hacia la derecha
-        glass.x += Math.min(distanceX, glass.speed);
+    if (glassImg.complete) {
+        glassHeight = glassWidth * (glassImg.height / glassImg.width);
     }
 
-    touchStartX = touchEndX;
-}, false);
-
-function imagesAreLoaded() {
-    if (imagesLoaded === 2 && gameStarted) {
-        loop();
-    }
+    // Ajustar las posiciones
+    beer.x = Math.random() * (canvas.width - beerWidth);
+    beer.y = 0; // Resetear la posición y de la cerveza
+    glass.x = canvas.width / 2 - glassWidth / 2;
+    glass.y = canvas.height - (glassHeight || 0); // Usar || para manejar el caso en que glassHeight aún no se haya definido
 }
 
-beerImg.onload = function() {
-    beerHeight = beerWidth * (beerImg.height / beerImg.width);
-    imagesLoaded++;
-    imagesAreLoaded();
-};
-
-glassImg.onload = function() {
-    glassHeight = glassWidth * (glassImg.height / glassImg.width);
-    glass.y = canvas.height - glassHeight; // Aquí se define correctamente la posición y de glass
-    imagesLoaded++;
-    imagesAreLoaded();
-};
-
-beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
-glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
+// Añadir el controlador de eventos para el redimensionamiento de la ventana
+window.addEventListener('resize', resizeCanvas);
 
 function update() {
     beer.y += beer.speed;
@@ -167,3 +134,6 @@ function loop() {
         requestAnimationFrame(loop);
     }
 }
+
+// Asegurarse de que el canvas se redimensione al cargar el juego
+resizeCanvas();
