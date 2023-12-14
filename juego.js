@@ -119,8 +119,10 @@ function update() {
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
 
-        if (score % 10 === 0) {
-            beer.speed += 0.5;
+        // Verificar si es necesario aumentar la velocidad.
+        if (score % 100 === 0) {
+            speedIncrements++;
+            beer.speed += 1; // Aumentar la velocidad en una unidad.
         }
     }
 
