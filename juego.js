@@ -1,89 +1,128 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-// Establecer proporciones iniciales
+const beerImg = new Image();
+const glassImg = new Image();
+
+// Definir proporciones iniciales
 const BEER_PROPORTION = 0.2;
 const GLASS_PROPORTION = 0.3;
 
-let beerWidth, glassWidth, beerHeight, glassHeight; // Estas se definirán en resizeCanvas()
-
-let speedIncrements = 0; // Contador para los incrementos de velocidad
+let beerWidth, glassWidth, beerHeight, glassHeight;
+let speedIncrements = 0;
 let imagesLoaded = 0;
 let gameStarted = false;
+let score = 0;
+let missedBeers = 0;
 
-// Definir objetos para la cerveza y la copa
 let beer = {
-    x: 0, // La posición x se establecerá en resizeCanvas()
+    x: 0,
     y: 0,
     speed: 2
 };
 
 let glass = {
-    x: 0, // La posición x se establecerá en resizeCanvas()
-    y: 0, // La posición y se establecerá en resizeCanvas()
+    x: 0,
+    y: 0,
     speed: 10
 };
 
-let score = 0;
-let missedBeers = 0;
-
-// Función de redimensionamiento para ajustar el canvas y elementos del juego
 function resizeCanvas() {
-    // Ajustar el canvas al tamaño de la ventana o contenedor
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Ajustar las dimensiones de la cerveza y la copa
     beerWidth = canvas.width * BEER_PROPORTION;
     glassWidth = canvas.width * GLASS_PROPORTION;
-    if (beerImg.complete) {
-        beerHeight = beerWidth * (beerImg.height / beerImg.width);
-    }
-    if (glassImg.complete) {
-        glassHeight = glassWidth * (glassImg.height / glassImg.width);
-    }
+    beerHeight = beerWidth * (beerImg.height / beerImg.width);
+    glassHeight = glassWidth * (glassImg.height / glassImg.width);
 
-    // Ajustar las posiciones
     beer.x = Math.random() * (canvas.width - beerWidth);
-    beer.y = 0; // Resetear la posición y de la cerveza
     glass.x = canvas.width / 2 - glassWidth / 2;
-    glass.y = canvas.height - (glassHeight || 0); // Usar || para manejar el caso en que glassHeight aún no se haya definido
+    glass.y = canvas.height - glassHeight;
+    
+    draw();
 }
 
-// Añadir el controlador de eventos para el redimensionamiento de la ventana
-window.addEventListener('resize', resizeCanvas);
+// Eventos de teclado
+document.addEventListener('keydown', function(event) {
+    if(gameStarted){
+        switch (event.keyCode) {
+            case 37:
+                glass.x -= glass.speed;
+                if (glass.x < 0) glass.x = 0;
+                break;
+            case 39:
+                glass.x += glass.speed;
+                if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
+                break;
+        }
+    }
+});
+
+// Eventos de toque
+let touchStartX;
+canvas.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+}, false);
+
+canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if(gameStarted){
+        let touchEndX = e.touches[0].clientX;
+        let distanceX = touchEndX - touchStartX;
+
+        glass.x += distanceX;
+        if (glass.x < 0) glass.x = 0;
+        if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
+        touchStartX = touchEndX;
+    }
+}, false);
+
+// Carga de imágenes
+function imagesAreLoaded() {
+    if (imagesLoaded === 2 && gameStarted) {
+        resizeCanvas();
+        loop();
+    }
+}
+
+beerImg.onload = function() {
+    beerHeight = beerWidth * (beerImg.height / beerImg.width);
+    imagesLoaded++;
+    imagesAreLoaded();
+};
+
+glassImg.onload = function() {
+    glassHeight = glassWidth * (glassImg.height / glassImg.width);
+    imagesLoaded++;
+    imagesAreLoaded();
+};
+
+beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
+glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
 
 function update() {
     beer.y += beer.speed;
 
-    // Primero verificamos si `beer` ha pasado el punto medio de `glass` y no puede ser atrapado.
-    if (beer.y + (beerHeight / 2) > glass.y + glassHeight) {
-        // Si `beer` ha caído completamente fuera del canvas, entonces aumentamos el contador de missedBeers.
-        if (beer.y > canvas.height) {
-            missedBeers++;
-            beer.x = Math.random() * (canvas.width - beerWidth);
-            beer.y = 0;
-        }
-    } 
-    // Luego, verificamos si `beer` ha sido atrapado por `glass`.
-    else if (
-        beer.y + (beerHeight / 2) > glass.y && 
-        beer.y + (beerHeight / 2) < glass.y + glassHeight && 
-        beer.x + beerWidth > glass.x && 
-        beer.x < glass.x + glassWidth
-    ) {
+    if (beer.y + beerHeight > canvas.height) {
+        missedBeers++;
         beer.x = Math.random() * (canvas.width - beerWidth);
         beer.y = 0;
+    } else if (
+        beer.x < glass.x + glassWidth &&
+        beer.x + beerWidth > glass.x &&
+        beer.y + beerHeight > glass.y &&
+        beer.y < glass.y + glassHeight
+    ) {
         score++;
+        beer.x = Math.random() * (canvas.width - beerWidth);
+        beer.y = 0;
 
-        // Verificar si es necesario aumentar la velocidad.
-        if (score % 100 === 0) {
-            speedIncrements++;
-            beer.speed += 1; // Aumentar la velocidad en una unidad.
+        if (score % 10 === 0) {
+            beer.speed += 0.5;
         }
     }
 
-    // Asegurarse de que `glass` no se salga de los límites del canvas.
     if (glass.x < 0) glass.x = 0;
     if (glass.x + glassWidth > canvas.width) glass.x = canvas.width - glassWidth;
 }
@@ -93,39 +132,32 @@ function draw() {
     ctx.drawImage(beerImg, beer.x, beer.y, beerWidth, beerHeight);
     ctx.drawImage(glassImg, glass.x, glass.y, glassWidth, glassHeight);
 
-    ctx.font = '14px Caveat';
+    ctx.font = '18px Caveat';
     ctx.fillStyle = 'black';
-    ctx.fillText('Atrapadas ' + score, 10, 25);
-
-    const missedText = 'Perdidas ' + missedBeers;
-    const textWidth = ctx.measureText(missedText).width;
-    ctx.fillText(missedText, canvas.width - textWidth - 10, 25);
-
-    // Dibujo del contador de incrementos de velocidad en el centro
-    const speedText = 'Velocidad +' + speedIncrements;
-    const speedTextWidth = ctx.measureText(speedText).width;
-    ctx.fillText(speedText, (canvas.width - speedTextWidth) / 2, 25);
+    ctx.fillText(`Score: ${score}`, 10, 50);
+    ctx.fillText(`Missed: ${missedBeers}`, canvas.width - 110, 50);
 }
 
+// Inicio y pausa del juego
 let gamePaused = false;
-
 const startButton = document.getElementById('startButton');
 startButton.addEventListener('click', function() {
-    if (startButton.textContent === "Iniciar Juego") {
+    if (!gameStarted) {
         gameStarted = true;
-        if (imagesLoaded === 2) {
-            loop();
-        }
-        startButton.textContent = "STOP";
-    } else if (startButton.textContent === "STOP") {
+        startButton.textContent = "Pause";
+        loop();
+    } else if (!gamePaused) {
         gamePaused = true;
-        startButton.textContent = "Continuar";
+        startButton.textContent = "Resume";
     } else {
         gamePaused = false;
-        loop();
-        startButton.textContent = "STOP";
+        startButton.textContent = "Pause";
+        requestAnimationFrame(loop);
     }
 });
+
+// Asegurarse de que el juego comience con el canvas redimensionado adecuadamente
+window.addEventListener('load', resizeCanvas);
 
 function loop() {
     if (!gamePaused) {
@@ -135,5 +167,5 @@ function loop() {
     }
 }
 
-// Asegurarse de que el canvas se redimensione al cargar el juego
-resizeCanvas();
+// Escucha el evento resize
+window.addEventListener('resize', resizeCanvas);
