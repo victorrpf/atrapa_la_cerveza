@@ -28,8 +28,9 @@ let glass = {
 };
 
 function resizeCanvas() {
+    const startButtonHeight = document.getElementById('startButton').offsetHeight;
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.height = window.innerHeight - startButtonHeight; // Resta la altura del botón
 
     beerWidth = canvas.width * BEER_PROPORTION;
     glassWidth = canvas.width * GLASS_PROPORTION;
