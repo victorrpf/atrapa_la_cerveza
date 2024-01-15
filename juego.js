@@ -99,8 +99,8 @@ glassImg.onload = function() {
     imagesAreLoaded();
 };
 
-beerImg.src = 'https://drive.google.com/uc?export=view&id=1XfyqMV41WSYpiQR1M2nwIAiat9-3fj7t';
-glassImg.src = 'https://drive.google.com/uc?export=view&id=1yXVXDKbJOgiul80BwpggMiMoLjMxmOdK';
+beerImg.src = 'cerveza_amstel_pequeña.png';
+glassImg.src = 'cubo_pequeño.png';
 
 function update() {
     beer.y += beer.speed;
